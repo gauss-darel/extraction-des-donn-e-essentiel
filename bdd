@@ -1,0 +1,67 @@
+---creation des tables---
+CREATE TABLE clients(
+    id INT generated always as identity primary key,
+    nom text not null,
+    pays text not null,
+    date_creation date
+);
+
+CREATE TABLE produits(
+    id INT moi2008
+     primary key,
+    nom text not null,
+    prix numeric(10,2) not null
+
+) ;
+
+create TABLE ventes(
+    id INT generated always as identity primary key,
+    id_client int not null references clients,
+    id_produit int not null references produits,
+    quantite int check (quantite > 0),
+    date_vente date not null
+);
+---insertion des données---
+
+INSERT INTO clients(nom, pays, date_creation) values
+('Jean Dupont', 'France', '2023-01-14'),
+('Marie Curie', 'France', '2025-02-15'),
+('Albert Einstein', 'Allemagne', '2025-02-15'),
+('Isaac Newton', 'Angleterre', '2026-02-14'),
+('Galileo Galilei', 'Italie', '2024-03-15');
+
+insert into produits(nom,prix) values
+('iphon', 2000),
+('samsumg', 2500),
+('Macbook', 1500),
+('dell', 1000),
+('asus',1200);
+
+INSERT INTO ventes( id_client, id_produit, quantite, date_vente) values
+(1, 1, 2, '2023-01-14'),
+(1, 1, 3, '2025-02-15'),
+(2, 2, 5, '2025-02-15'),
+(2, 3, 4, '2026-02-14'),
+(3, 2, 4, '2024-03-15');
+
+
+--question auquels repondre
+-- 1•tout les clients
+select*from clients;
+
+--2•lister tout les produits
+select*from produits;
+--quels sont les produits prenium(>900)
+
+SELECT * FROM produits WHERE prix > 900;
+--3•combien avons nous vendu au totale
+SELECT sum(p.prix*quantite) as totale_vende  
+from ventes v,produits p
+ where p.id=v.id_produit;
+
+--4•quels pays génére le plus de ventes
+select c.pays,sum(p.prix*quantite) as totale_vente 
+from ventes v,produits p , clients c
+ where p.id=v.id_produit and c.id=v.id_client 
+group by c.pays
+LIMIT 10 ;
